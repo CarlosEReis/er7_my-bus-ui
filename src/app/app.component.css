@@ -1,3 +1,6 @@
+@import "primeicons/primeicons.css";
+
+
 html, body, #map {
     height: 100%;
     width: 100%;
@@ -13,4 +16,11 @@ html, body, #map {
     left: 0;
     z-index: -1;
   }
-  
+
+  .material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+  }

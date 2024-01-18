@@ -1,15 +1,57 @@
 
-<div class="card m-3" style="width: 25rem;">
-  <div class="card-body">
-    <h5 class="card-title">Pesquisa sua linha</h5>
-
-<input class="form-control" [value]="search" (input)="pesquisar($event)" list="linhas" id="exampleDataList" placeholder="Pesuisa aqui pelo número ou nome da linha">
-<datalist id="linhas" class="top-0 start-0" [hidden]="false">
-  <option *ngFor="let linha of opcoesLinhas" [label]="linha.nome" [value]="linha.numero">
-</datalist>
-    <br>
-    
-  </div>
-</div>
 <div class="full" id="map">
 </div>
+
+<div style="position: absolute !important;">
+
+  <p-speedDial [model]="menu" direction="up" [transitionDelay]="80" showIcon="pi pi-bars" hideIcon="pi pi-times" className="speeddial-left"></p-speedDial>
+</div>
+
+<p-sidebar [(visible)]="modalSearch" >
+
+  <p-autoComplete  class="col-12" scrollHeight="700" [(ngModel)]="search" [suggestions]="opcoesLinhas" 
+        (completeMethod)="buscarLinha()" (onSelect)="aoSelecionar($event.value.code)" (onClear)="removeLinha()" field="name" [showClear]="true" >
+        
+            <ng-template let-linha pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <p-tag >
+                    <span class="text-base">{{linha.code}}</span>
+                  </p-tag>
+                  <div>{{ linha.name }}</div>
+                </div>
+            </ng-template>
+        </p-autoComplete> 
+    
+        <!--  *ngIf="opcoesDirecao.length" -->
+        <div class="mt-5">
+          
+          <div *ngIf="opcoesDirecao.length" class="col-12 mt-4">
+            <p>Selecione a direção</p>
+            <div class="flex flex-column gap-3">
+              <div *ngFor="let direcao of opcoesDirecao" class="field-checkbox">
+                  <p-radioButton [inputId]="direcao.value" name="direcao.key" [value]="direcao.value" [(ngModel)]="direcaoSelecionada" (onClick)="aoSelecionarDirecao($event.value)"></p-radioButton>
+                  <label [for]="direcao.value" class="ml-3">{{ direcao.name }}</label>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="direcaoSelecionada">
+            <div  class="col-12 mt-4">
+              <p>Tempo de atualização</p>
+              <div class="flex flex-column gap-3">
+                <p-knob [(ngModel)]="tempoCorrenteAtualizao" [size]="100" [max]="20" [readonly]="true"></p-knob>
+              </div>
+            </div>
+    
+            <div class="col-12 mt-4">
+              <p>Veículos</p>
+              <div class="flex flex-column gap-3">           
+                <p-selectButton *ngIf="opcoesVeiculosDirecao.length" [options]="opcoesVeiculosDirecao" [(ngModel)]="veiculo" optionLabel="name" optionValue="value" (onOptionClick)="aoSelecionarVeiculo($event.option.value)"></p-selectButton>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+
+</p-sidebar>
+

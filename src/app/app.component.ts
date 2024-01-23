@@ -22,15 +22,87 @@ export class AppComponent implements OnInit {
   private readonly API_URL = "https://er7-my-bus-api.onrender.com"
   //private readonly API_URL = "http://localhost:8080"
 
+  fixaNaPosicao = false;
   modalSearch = false;
   menu: MenuItem[] = [
     {
       icon: 'pi pi-search',
+      tooltipOptions: {
+          tooltipLabel: 'Pesquisar linha'
+      },
       command: () => {
         this.modalSearch = true
       }
+    },
+    {
+      icon:'pi pi-sort-alt',
+      tooltipOptions: {
+        tooltipLabel: 'Interter Sentido'
+      },
+      command: () => this.inverterSentido()
+    },
+    {
+      icon:'pi pi-map',
+      tooltipOptions: {
+        tooltipLabel: 'Localização'
+      },
+      command: () => this.solicitaLocalizacao()
+    },
+    {
+      icon:'pi pi-map-marker',
+      tooltipOptions: {
+        tooltipLabel: 'Fixar posição'
+      },
+      command: () => this.fixaNaPosicaoUsuario()
     }
+
   ]
+  
+  private inverterSentido() {
+    if (this.direcaoSelecionada === 1) {
+      this.direcaoSelecionada = 2
+    } else {
+      this.direcaoSelecionada = 1;
+    }
+    this.aoSelecionarDirecao(this.direcaoSelecionada);
+  }
+
+  private solicitaLocalizacao() {
+    
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition((position) =>{
+      
+        this.location.lat = position.coords.latitude;
+        this.location.lng = position.coords.longitude;
+        //this.zoom    = 15;
+        
+        this.map.setZoom(15);
+        //this.map.setCenter(this.location);
+
+        var marker = new google.maps.Marker({
+          position: this.location,
+          map: this.map,
+        })
+
+        this.map.setCenter({lat: this.location.lat, lng: this.location.lng});
+      });
+    } else {
+      alert('Ops, não foi possóvel obter a localização.');
+    }
+  }
+
+  private fixaNaPosicaoUsuario() {
+    
+    this.fixaNaPosicao = !this.fixaNaPosicao;
+    if (this.fixaNaPosicao) {
+      this.map.setCenter({lat: this.location.lat, lng: this.location.lng});
+      this.map.setZoom(15);
+    } else {
+      this.centralizaNaRota();
+    } 
+  }
+
+
   teste() {
     this.modalSearch = true;
   }
@@ -69,6 +141,8 @@ export class AppComponent implements OnInit {
   }
 
   public aoSelecionarVeiculo(placa: any) {
+    console.log(this.veiculo);
+    
     this.veiculo ? this.centralizaNoVeiculo(this.veiculo) : this.centralizaNaRota();
   }
 
@@ -76,6 +150,7 @@ export class AppComponent implements OnInit {
     console.log('removendo');
     
     this.search = '';
+    this.veiculo = '';
     this.linhaSelecionada = '';
     this.direcaoSelecionada = '';
     this.opcoesLinhas = [];
@@ -123,7 +198,9 @@ export class AppComponent implements OnInit {
     let pathDecode = google.maps.geometry.encoding.decodePath(rota?.encode)
     
     this.setaRotaNoMapa(rota?.idTipoSentido, pathDecode);
-    this.centralizaNaRota();
+    if (!this.fixaNaPosicao) {
+      this.centralizaNaRota();
+    }
     this.setaParadas(rota);
     this.contadorTempoAtualizacao()
   }
@@ -195,8 +272,8 @@ export class AppComponent implements OnInit {
     this.linhaService.buscarLinha(linha)
       .subscribe({
         next: (linhas: any) => {
-          let veiculos = linhas.veiculos.filter((veiculo: Veiculo) => veiculo.sentidoLinha === direcao)
-          veiculos.map(((veiculo: Veiculo) => {
+          this.veiculosDirecaoSelecionada = linhas.veiculos.filter((veiculo: Veiculo) => veiculo.sentidoLinha === direcao);
+          this.veiculosDirecaoSelecionada.map(((veiculo: Veiculo) => {
             let marker = new google.maps.Marker({
               position: { lat: veiculo.latitude, lng: veiculo.longitude },
                 map: this.map,
@@ -214,6 +291,16 @@ export class AppComponent implements OnInit {
             console.log(`LOG ${moment.toLocaleTimeString()} ----- PLACA: ${veiculo.placa} - TRAMISSÃO: ${ d.toLocaleDateString()} - ${d.toLocaleTimeString() } - TRANS.CICLO: ${veiculo.alertaNaoTransmitiuCiclo}`);
             
             this.markersOnibus.push(marker)
+
+            if (!this.fixaNaPosicao) {
+              if (this.veiculo) {
+                console.log(this.veiculo);
+                this.centralizaNoVeiculo(this.veiculo);
+              } else {
+               this.centralizaNaRota(); 
+              }              
+            }
+
           }))
         },
         error: (erro) => alert(JSON.stringify(erro))

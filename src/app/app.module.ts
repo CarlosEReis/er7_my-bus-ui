@@ -16,6 +16,7 @@ import { KnobModule } from 'primeng/knob';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { DialogModule } from 'primeng/dialog';
 import { SidebarModule } from 'primeng/sidebar';
+import { ImageModule } from 'primeng/image';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -43,6 +44,7 @@ import { StyleClassModule } from 'primeng/styleclass';
     KnobModule,
     SidebarModule,
     DialogModule,
+    ImageModule,
 
     CardModule,
     AutoCompleteModule,

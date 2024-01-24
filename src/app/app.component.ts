@@ -22,6 +22,9 @@ export class AppComponent implements OnInit {
   private readonly API_URL = "https://er7-my-bus-api.onrender.com"
   //private readonly API_URL = "http://localhost:8080"
 
+  transitoAtivo = false;
+  trafficLayer!: google.maps.TrafficLayer;
+
   fixaNaPosicao = false;
   modalSearch = false;
   menu: MenuItem[] = [
@@ -54,9 +57,40 @@ export class AppComponent implements OnInit {
         tooltipLabel: 'Fixar posição'
       },
       command: () => this.fixaNaPosicaoUsuario()
+    },
+    {
+      icon:'pi pi-car',
+      tooltipOptions: {
+        tooltipLabel: 'Habilitar Trânsito'
+      },
+      command: () => this.transitoAtivo ? this.desabilitaTransito() : this.habilitaTransito()
     }
-
   ]
+
+  private habilitaTransito() {
+    this.transitoAtivo = true;
+    this.trafficLayer = new google.maps.TrafficLayer();
+    this.trafficLayer.setMap(this.map);
+    this.trafficLayer.setOptions({autoRefresh: true})
+
+    this.polyline.setOptions({
+      strokeColor: '#979393',
+      strokeOpacity: 0.4,
+      strokeWeight: 15,
+    })
+  }
+  private desabilitaTransito() {
+    this.transitoAtivo = false;
+    this.trafficLayer.setMap(null);
+    this.trafficLayer.unbindAll();
+
+
+    this.polyline.setOptions({
+      //strokeColor: rota === 1 ? "#FF0000" : "#2168C9",
+      strokeOpacity: 1.0,
+      strokeWeight: 2.5,
+    })
+  }
   
   private inverterSentido() {
     if (this.direcaoSelecionada === 1) {
@@ -382,9 +416,12 @@ export class AppComponent implements OnInit {
 
         this.map = new google.maps.Map(mapElement, {
           center: this.location,
-          zoom: this.zoom,
           mapId: '4504f8b37365c3d0',
-          disableDefaultUI: true
+          disableDefaultUI: true,
+          zoom: 16,
+          heading: 320,
+          tilt: 47.5
+
         });
 
         this.polyline = new google.maps.Polyline();

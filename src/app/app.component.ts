@@ -22,6 +22,13 @@ export class AppComponent implements OnInit {
   private readonly API_URL = "https://er7-my-bus-api.onrender.com"
   //private readonly API_URL = "http://localhost:8080"
 
+  modalGeoLocalizacao = true;
+  posicaoUsuario!: google.maps.Marker;
+
+
+
+
+
   transitoAtivo = false;
   trafficLayer!: google.maps.TrafficLayer;
 
@@ -101,8 +108,8 @@ export class AppComponent implements OnInit {
     this.aoSelecionarDirecao(this.direcaoSelecionada);
   }
 
-  private solicitaLocalizacao() {
-    
+  public solicitaLocalizacao() {
+    this.modalGeoLocalizacao = false;
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition((position) =>{
       
@@ -113,7 +120,7 @@ export class AppComponent implements OnInit {
         this.map.setZoom(15);
         //this.map.setCenter(this.location);
 
-        var marker = new google.maps.Marker({
+        this.posicaoUsuario = new google.maps.Marker({
           position: this.location,
           map: this.map,
         })

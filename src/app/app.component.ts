@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
     {
       icon:'pi pi-sort-alt',
       tooltipOptions: {
-        tooltipLabel: 'Interter Sentido'
+        tooltipLabel: 'Inverter Sentido'
       },
       command: () => this.inverterSentido()
     },
@@ -108,6 +108,8 @@ export class AppComponent implements OnInit {
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition((position) =>{
       
+
+
         this.location.lat = position.coords.latitude;
         this.location.lng = position.coords.longitude;
         //this.zoom    = 15;
@@ -115,12 +117,15 @@ export class AppComponent implements OnInit {
         this.map.setZoom(15);
         //this.map.setCenter(this.location);
 
-        this.posicaoUsuario = new google.maps.Marker({
+        this.markerusuario.setValues({
           position: this.location,
           map: this.map,
           animation: google.maps.Animation.BOUNCE,
           icon: 'https://img.icons8.com/3d-fluency/40/map-pin.png'
         })
+
+        //this.posicaoUsuario = new google.maps.Marker({
+        //})
 
         this.map.setCenter({lat: this.location.lat, lng: this.location.lng});
       });
@@ -199,6 +204,7 @@ export class AppComponent implements OnInit {
   }
 
   public aoSelecionarDirecao(pathId: string) {
+    this.modalSearch = false;
     this.tempoCorrenteAtualizao = 0;
     clearInterval(this.intervalID);
     this.opcoesVeiculosDirecao = [];
@@ -234,7 +240,10 @@ export class AppComponent implements OnInit {
 
     let rota = this.linhaX.rotas.find(rota => rota.idTipoSentido === idTipoSentido);
     let pathDecode = google.maps.geometry.encoding.decodePath(rota?.encode)
+    console.log(JSON.stringify(pathDecode));
     
+
+
     this.setaRotaNoMapa(rota?.idTipoSentido, pathDecode);
     if (!this.fixaNaPosicao) {
       this.centralizaNaRota();
@@ -326,7 +335,7 @@ export class AppComponent implements OnInit {
             })
             marker.addListener("click", () => {
               infoWindow.close();
-              infoWindow.setContent(marker.getTitle());
+              infoWindow.setContent('<b>Placa: </b>' + marker.getTitle());
               infoWindow.open(marker.getMap(), marker);
             });
             let d = new Date(veiculo.dataUltimaTransmissao)
@@ -353,6 +362,7 @@ export class AppComponent implements OnInit {
   private centralizaNaRota() {
     let bounds = new google.maps.LatLngBounds();
     this.polyline.getPath().forEach((path) => bounds.extend(path));
+    
     this.map.fitBounds(bounds);
   }
 
@@ -376,7 +386,8 @@ export class AppComponent implements OnInit {
       strokeColor: rota === 1 ? "#FF0000" : "#2168C9",
       strokeOpacity: 1.0,
       strokeWeight: 2.5,
-      path: pathDecode
+      path: pathDecode,
+      
     }));
     this.polyline.setMap(this.map);
     //this.setPontoInicialEFinal(pathDecode);
@@ -435,7 +446,7 @@ export class AppComponent implements OnInit {
         });
 
         this.polyline = new google.maps.Polyline();
-
+        this.markerusuario = new google.maps.Marker();
 
 
 //        trafficLayer.setMap(this.map);

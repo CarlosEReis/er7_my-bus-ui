@@ -25,10 +25,6 @@ export class AppComponent implements OnInit {
   modalGeoLocalizacao = true;
   posicaoUsuario!: google.maps.Marker;
 
-
-
-
-
   transitoAtivo = false;
   trafficLayer!: google.maps.TrafficLayer;
 
@@ -91,7 +87,6 @@ export class AppComponent implements OnInit {
     this.trafficLayer.setMap(null);
     this.trafficLayer.unbindAll();
 
-
     this.polyline.setOptions({
       //strokeColor: rota === 1 ? "#FF0000" : "#2168C9",
       strokeOpacity: 1.0,
@@ -123,6 +118,8 @@ export class AppComponent implements OnInit {
         this.posicaoUsuario = new google.maps.Marker({
           position: this.location,
           map: this.map,
+          animation: google.maps.Animation.BOUNCE,
+          icon: 'https://img.icons8.com/3d-fluency/40/map-pin.png'
         })
 
         this.map.setCenter({lat: this.location.lat, lng: this.location.lng});
@@ -308,7 +305,7 @@ export class AppComponent implements OnInit {
     this.markersOnibus.forEach(marker => marker.setMap(null));
     
     let linha = this.linhaX.codigo;
-
+    const infoWindow = new google.maps.InfoWindow();
     let direcao = this.direcaoSelecionada === 1 ? 'ida' : 'volta';
     this.linhaService.buscarLinha(linha)
       .subscribe({
@@ -327,6 +324,11 @@ export class AppComponent implements OnInit {
                   fontSize: "18px",
                 }
             })
+            marker.addListener("click", () => {
+              infoWindow.close();
+              infoWindow.setContent(marker.getTitle());
+              infoWindow.open(marker.getMap(), marker);
+            });
             let d = new Date(veiculo.dataUltimaTransmissao)
             let moment = new Date()
             console.log(`LOG ${moment.toLocaleTimeString()} ----- PLACA: ${veiculo.placa} - TRAMISSÃO: ${ d.toLocaleDateString()} - ${d.toLocaleTimeString() } - TRANS.CICLO: ${veiculo.alertaNaoTransmitiuCiclo}`);
@@ -377,6 +379,7 @@ export class AppComponent implements OnInit {
       path: pathDecode
     }));
     this.polyline.setMap(this.map);
+    //this.setPontoInicialEFinal(pathDecode);
   }
 
   private returnaOsBairros(s: string): string {
@@ -432,6 +435,9 @@ export class AppComponent implements OnInit {
         });
 
         this.polyline = new google.maps.Polyline();
+
+
+
 //        trafficLayer.setMap(this.map);
 
         /*this.httpClient.get('http://192.168.1.5:8080/shapes/6687')

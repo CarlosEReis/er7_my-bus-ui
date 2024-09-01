@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LinhaX } from './models';
 import { Observable, map } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LinhasServiceService {
 
-  private readonly URL_API = 'https://er7-my-bus-api.onrender.com';
+  private readonly URL_API = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 

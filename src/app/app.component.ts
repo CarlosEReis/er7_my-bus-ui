@@ -5,6 +5,7 @@ import { LinhasServiceService } from './linhas-service.service';
 import { LinhaX, Ponto, Rota, Veiculo } from './models';
 import { interval } from 'rxjs';
 import { MenuItem, PrimeIcons } from 'primeng/api';
+import { environment } from 'src/environments/environment';
 
 interface Linha {
   id: string;
@@ -19,8 +20,7 @@ interface Linha {
 })
 export class AppComponent implements OnInit {
 
-  private readonly API_URL = "https://er7-my-bus-api.onrender.com"
-  //private readonly API_URL = "http://localhost:8080"
+  private readonly API_URL = environment.apiUrl;
 
   modalGeoLocalizacao = true;
   posicaoUsuario!: google.maps.Marker;

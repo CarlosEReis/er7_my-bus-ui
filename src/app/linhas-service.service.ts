@@ -18,4 +18,9 @@ export class LinhasServiceService {
     .pipe(map(response => response))
   }
 
+  public buscarLinhas(search: string) : Observable<any>{
+    return this.http
+      .get(this.URL_API.concat(`/linhas?search=${search}`))
+      .pipe(map((response) => response));
+  }
 }

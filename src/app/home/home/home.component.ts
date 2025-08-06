@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Loader } from '@googlemaps/js-api-loader';
-import { interval } from 'rxjs';
 import { MenuItem, PrimeIcons } from 'primeng/api';
 import { environment } from 'src/environments/environment';
 import { LinhaX, Ponto, Rota, Veiculo } from 'src/app/models';
@@ -117,32 +116,16 @@ export class HomeComponent implements OnInit {
     this.aoSelecionarDirecao(this.direcaoSelecionada);
   }
 
-  public solicitaLocalizacao() {
-    this.modalGeoLocalizacao = false;
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.location.lat = position.coords.latitude;
-        this.location.lng = position.coords.longitude;
-        //this.zoom    = 15;
-
-        this.map.setZoom(15);
-        //this.map.setCenter(this.location);
-
-        this.markerusuario.setValues({
-          position: this.location,
-          map: this.map,
-          animation: google.maps.Animation.BOUNCE,
-          icon: 'https://img.icons8.com/3d-fluency/40/map-pin.png',
-        });
-
-        //this.posicaoUsuario = new google.maps.Marker({
-        //})
-
-        this.map.setCenter({ lat: this.location.lat, lng: this.location.lng });
-      });
-    } else {
-      alert('Ops, não foi possóvel obter a localização.');
-    }
+  public capturandoLocalizacao(posicao: GeolocationPosition) {
+    this.location.lat = posicao.coords.latitude;
+    this.location.lng = posicao.coords.longitude;
+    this.map.setCenter({ lat: this.location.lat, lng: this.location.lng });
+    this.markerusuario.setValues({
+      position: this.location,
+      map: this.map,
+      animation: google.maps.Animation.BOUNCE,
+      icon: 'https://img.icons8.com/3d-fluency/40/map-pin.png',
+    });
   }
 
   private fixaNaPosicaoUsuario() {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-geo-localizacao',
@@ -9,7 +9,15 @@ export class GeoLocalizacaoComponent {
 
   @Output() localizacaoObtida = new EventEmitter<GeolocationPosition>();
 
-  protected modalVisivel = true;
+  private modalVisivel = true;
+
+  get visible(): boolean {
+    return this.modalVisivel;
+  }
+
+  public exibir(): void {
+    this.modalVisivel = true;
+  }
 
   public fechar(): void {
     this.modalVisivel = false;

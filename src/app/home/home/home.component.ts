@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Loader } from '@googlemaps/js-api-loader';
 import { MenuItem, PrimeIcons } from 'primeng/api';
 import { environment } from 'src/environments/environment';
 import { LinhaX, Ponto, Rota, Veiculo } from 'src/app/models';
 import { LinhasServiceService } from 'src/app/linhas-service.service';
 import { AuthService } from '@auth0/auth0-angular';
+import { GeoLocalizacaoComponent } from '../geo-localizacao/geo-localizacao.component';
 
 interface Linha {
   id: string;
@@ -21,7 +22,8 @@ interface Linha {
 export class HomeComponent implements OnInit {
   private readonly API_URL = environment.apiUrl;
 
-  modalGeoLocalizacao = true;
+  @ViewChild(GeoLocalizacaoComponent) geoLocalizacao!: GeoLocalizacaoComponent;
+
   posicaoUsuario!: google.maps.Marker;
 
   transitoAtivo = false;
@@ -51,7 +53,7 @@ export class HomeComponent implements OnInit {
       tooltipOptions: {
         tooltipLabel: 'Localização',
       },
-      command: () => this.solicitaLocalizacao(),
+      command: () => this.geoLocalizacao.exibir(),
     },
     {
       icon: 'pi pi-map-marker',

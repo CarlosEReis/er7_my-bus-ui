@@ -26,16 +26,17 @@ import { ImageModule } from 'primeng/image';
 import { FormsModule } from '@angular/forms';
 
 import { StyleClassModule } from 'primeng/styleclass';
+import { GeoLocalizacaoComponent } from './geo-localizacao/geo-localizacao.component';
 
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
+    GeoLocalizacaoComponent
   ],
   imports: [
     CommonModule,
     HomeRoutingModule,
-
 
     // BrowserModule,
     // BrowserAnimationsModule,
@@ -56,6 +57,6 @@ import { StyleClassModule } from 'primeng/styleclass';
     CardModule,
     AutoCompleteModule,
     StyleClassModule,
-  ]
+  ],
 })
-export class HomeModule { }
+export class HomeModule {}

@@ -1,0 +1,17 @@
+<p-dialog header="Onde você está?" [(visible)]="modalVisivel" [modal]="true" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '20vw' }" [draggable]="false" [resizable]="false">
+
+  <div class="col-12 p-0">
+    <p-image class="justify-content-center" src="/assets/img/geo.png" alt="image de geolocalização" width="100%"></p-image>
+  </div>
+
+  <p class="m-0">
+    Ative a sua localização para que possamos obter sua posição atual e saber qual o ponto de ônibus mais próximo.
+  </p>
+
+  <ng-template pTemplate="footer">
+    <div class="flex align-items-center gap-2">
+      <p-button label="Cancelar" (click)="fechar()" [text]="true" styleClass="w-full" class="w-full"></p-button>
+      <p-button icon="pi pi-check" (click)="obterLocalizacao()" label="Ativar" styleClass="w-full" class="w-full" pAutoFocus [autofocus]="true"></p-button>
+  </div>
+  </ng-template>
+</p-dialog>
